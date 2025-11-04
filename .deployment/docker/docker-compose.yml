@@ -1,0 +1,131 @@
+networks:
+  online-store-system-net:
+    name: online-store-system-net
+    driver: bridge
+
+services:
+  online-store-system-php-cli:
+    container_name: online-store-system-php-cli
+    networks:
+      - online-store-system-net
+    build:
+      context: ../../
+      dockerfile: ./.deployment/docker/php-cli/Dockerfile
+      args:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        INSTALL_XDEBUG: ${INSTALL_XDEBUG}
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+    volumes:
+      - ./../../:/var/www/online-store-system
+
+  online-store-system-php-fpm:
+    container_name: online-store-system-php-fpm
+    networks:
+      - online-store-system-net
+    build:
+      context: ../../
+      dockerfile: ./.deployment/docker/php-fpm/Dockerfile
+      args:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        INSTALL_XDEBUG: ${INSTALL_XDEBUG}
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+    volumes:
+      - ./../../:/var/www/online-store-system
+
+  online-store-system-php-worker:
+    container_name: online-store-system-php-worker
+    networks:
+      - online-store-system-net
+    build:
+      context: ../../
+      dockerfile: ./.deployment/docker/php-worker/Dockerfile
+      args:
+        PUID: ${PUID}
+        PGID: ${PGID}
+        INSTALL_XDEBUG: ${INSTALL_XDEBUG}
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+    depends_on:
+      - online-store-system-rabbitmq
+    volumes:
+      - ./../../:/var/www/online-store-system
+      - ./supervisor/conf.d:/etc/supervisor/conf.d
+
+  online-store-system-nginx:
+    container_name: online-store-system-nginx
+    networks:
+      - online-store-system-net
+    build:
+      context: ./nginx
+      dockerfile: ./Dockerfile
+      args:
+        PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+        PHP_UPSTREAM_PORT: ${PHP_UPSTREAM_PORT}
+    environment:
+      PHP_UPSTREAM_CONTAINER: ${PHP_UPSTREAM_CONTAINER}
+      PHP_UPSTREAM_PORT: ${PHP_UPSTREAM_CONTAINER}
+    ports:
+      - ${NGINX_HOST_HTTP_PORT}:80
+    volumes:
+      - ./../../:/var/www/online-store-system:rw
+    depends_on:
+      - online-store-system-php-fpm
+
+  online-store-system-postgres:
+    container_name: online-store-system-postgres
+    networks:
+      - online-store-system-net
+    build:
+      context: ./postgres
+      dockerfile: ./Dockerfile
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      POSTGRES_HOST: ${POSTGRES_DB_HOST}
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - db_online-store-system_data:/var/lib/postgresql/data:rw
+
+  online-store-system-rabbitmq:
+    container_name: online-store-system-rabbitmq
+    build:
+      context: ../../
+      dockerfile: ./.deployment/docker/rabbitmq/Dockerfile
+    ports:
+      - ${RABBIT_PORT}:5672
+      - ${RABBIT_MANAGEMENT_PORT}:15672
+      - ${RABBIT_STREAM_PORT}:5552
+      - ${RABBIT_MQTT_PORT}:1883
+      - ${RABBIT_MQTT_WS_PORT}:15675
+    networks:
+      - online-store-system-net
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBIT_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: >-
+        -rabbitmq_stream advertised_host localhost
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+      - rabbitmq-logs:/var/log/rabbitmq
+
+volumes:
+  db_online-store-system_data:
+  rabbitmq-data:
+    driver: local
+  rabbitmq-logs:
+    driver: local

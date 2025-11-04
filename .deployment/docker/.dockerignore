@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+.tmp/
+.cache/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Symfony
+/var/cache/
+/var/logs/
+/var/sessions/
+/var/error-screenshots/
+.env.local
+.env.local.php
+.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+
+# PHPUnit
+.phpunit.result.cache
+/phpunit.xml
+
+# Composer dev dependencies (для production build)
+# /vendor/
+
+# Node modules (если используется)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Test coverage
+/coverage/
+
+# Deployment files
+.deployment/
