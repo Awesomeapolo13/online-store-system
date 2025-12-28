@@ -1,0 +1,13 @@
+includes:
+	- phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - src
+        - tests
+#    excludePaths:
+#        - tests/Tools
+#        - tests/Unit/Application/Assembler/Response
+
+    treatPhpDocTypesAsCertain: true

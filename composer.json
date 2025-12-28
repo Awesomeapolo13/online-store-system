@@ -65,6 +65,18 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "deptrac": [
+            "vendor/bin/deptrac analyse"
+        ],
+        "cs-check": [
+            "vendor/bin/php-cs-fixer fix --dry-run --diff"
+        ],
+        "cs-fix": [
+            "vendor/bin/php-cs-fixer fix"
+        ],
+        "stan": [
+            "vendor/bin/phpstan analyse -c phpstan.neon"
         ]
     },
     "conflict": {
@@ -77,6 +89,11 @@
         }
     },
     "require-dev": {
+        "deptrac/deptrac": "^4.4",
+        "friendsofphp/php-cs-fixer": "^3.92",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-doctrine": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.3.*",
         "symfony/css-selector": "7.3.*",
