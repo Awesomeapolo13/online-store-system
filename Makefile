@@ -57,3 +57,9 @@ fx_load:
 	${DOCKER_EXEC_PHP} php bin/console doctrine:fixtures:load
 init:
 	make com_i m_run fx_load
+
+##################
+# Static analyzers
+##################
+deptrac:
+	${DOCKER_EXEC_PHP} composer deptrac

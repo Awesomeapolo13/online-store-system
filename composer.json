@@ -65,6 +65,9 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "deptrac": [
+            "vendor/bin/deptrac analyse"
         ]
     },
     "conflict": {
@@ -77,6 +80,7 @@
         }
     },
     "require-dev": {
+        "deptrac/deptrac": "^4.4",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "7.3.*",
         "symfony/css-selector": "7.3.*",

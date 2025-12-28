@@ -1,0 +1,31 @@
+parameters:
+  paths:
+    - ./src
+  exclude_files:
+    - '#.*test.*#'
+  layers:
+    - name: Domain
+      collectors:
+        - type: directory
+          value: src/Domain/.*
+    - name: Application
+      collectors:
+        - type: directory
+          value: src/Application/.*
+    - name: Infrastructure
+      collectors:
+        - type: directory
+          value: src/Infrastructure/.*
+    - name: Framework
+      collectors:
+        - type: classLike
+          value: (Symfony|Doctrine)\\.*
+
+  ruleset:
+    Domain:
+    Application:
+      - Domain
+    Infrastructure:
+      - Domain
+      - Application
+      - Framework
