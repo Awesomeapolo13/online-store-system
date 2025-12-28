@@ -63,3 +63,7 @@ init:
 ##################
 deptrac:
 	${DOCKER_EXEC_PHP} composer deptrac
+cs_check:
+	${DOCKER_EXEC_PHP} composer cs-check
+cs_fix:
+	${DOCKER_EXEC_PHP} composer cs-fix
