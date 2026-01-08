@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Application\Event;
+namespace App\Shared\Application\Event;
 
 use App\Domain\Event\EventInterface;
 
