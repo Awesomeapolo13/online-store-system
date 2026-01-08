@@ -9,6 +9,23 @@ services:
         resource: '../src/'
         exclude:
             - '../src/DependencyInjection/'
-            - '../src/Domain/Entity/'
-            - '../src/Domain/ValueObject/'
-            - '../src/Kernel.php'
+            - '../src/Shared/Domain/Entity/'
+            - '../src/Shared/Domain/ValueObject/'
+            - '../src/Shared/Infrastructure/Kernel.php'
+            - '../src/Order/Domain/Entity/'
+            - '../src/Order/Domain/ValueObject/'
+            - '../src/Notification/Domain/Entity/'
+            - '../src/Notification/Domain/ValueObject/'
+
+    _instanceof:
+        App\Shared\Application\Command\CommandHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: command.bus }
+
+        App\Shared\Application\Query\QueryHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: query.bus }
+
+        App\Shared\Application\Event\EventHandlerInterface:
+            tags:
+                - { name: messenger.message_handler, bus: event.bus }

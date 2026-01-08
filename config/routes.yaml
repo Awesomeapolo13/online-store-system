@@ -1,3 +1,11 @@
 controllers:
-    resource: ../src/Infrastructure/Http/Controller/
+    resource: ../src/Shared/Infrastructure/Http/Controller/
+    type: attribute
+
+order:
+    resource: ../src/Order/Infrastructure/Http/Controller/
+    type: attribute
+
+notification:
+    resource: ../src/Notification/Infrastructure/Http/Controller/
     type: attribute
