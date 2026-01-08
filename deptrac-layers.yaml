@@ -7,15 +7,15 @@ parameters:
     - name: Domain
       collectors:
         - type: directory
-          value: src/Domain/.*
+          value: src/\w+/Domain/.*
     - name: Application
       collectors:
         - type: directory
-          value: src/Application/.*
+          value: src/\w+/Application/.*
     - name: Infrastructure
       collectors:
         - type: directory
-          value: src/Infrastructure/.*
+          value: src/\w+/Infrastructure/.*
     - name: Framework
       collectors:
         - type: classLike

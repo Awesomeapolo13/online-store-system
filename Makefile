@@ -3,7 +3,7 @@
 ##################
 
 DOCKER_COMPOSE = docker compose -f ./.deployment/docker/docker-compose.yml --env-file ./.deployment/docker/.env
-DOCKER_EXEC_PHP = docker exec -it php-fpm
+DOCKER_EXEC_PHP = docker exec -it online-store-system-php-cli
 
 ##################
 # Docker compose
@@ -62,7 +62,8 @@ init:
 # Static analyzers
 ##################
 deptrac:
-	${DOCKER_EXEC_PHP} composer deptrac
+	${DOCKER_EXEC_PHP} composer deptrac-layers
+	${DOCKER_EXEC_PHP} composer deptrac-modules
 cs_check:
 	${DOCKER_EXEC_PHP} composer cs-check
 cs_fix:
