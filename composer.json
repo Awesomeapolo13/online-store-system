@@ -66,8 +66,11 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "deptrac": [
-            "vendor/bin/deptrac analyse"
+        "deptrac-layers": [
+            "vendor/bin/deptrac analyse --config-file=deptrac-layers.yaml"
+        ],
+        "deptrac-modules": [
+            "vendor/bin/deptrac analyse --config-file=deptrac-modules.yaml"
         ],
         "cs-check": [
             "vendor/bin/php-cs-fixer fix --dry-run --diff"

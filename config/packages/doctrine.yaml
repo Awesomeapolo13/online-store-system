@@ -11,26 +11,50 @@ doctrine:
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            Entity:
+            SharedEntity:
                 type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Infrastructure/Database/ORM/Entity'
-                prefix: 'App\Domain\Entity'
-                alias: Entity
+                dir: '%kernel.project_dir%/src/Shared/Infrastructure/Database/ORM/Entity'
+                prefix: 'App\Shared\Domain\Entity'
+                alias: SharedEntity
+            SharedValueObjects:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Shared/Infrastructure/Database/ORM/ValueObject'
+                prefix: 'App/Shared/Domain\ValueObject'
+                alias: SharedValueObject
 
-            ValueObjects:
+            OrderEntity:
                 type: xml
                 is_bundle: false
-                dir: '%kernel.project_dir%/src/Infrastructure/Database/ORM/ValueObject'
-                prefix: 'App\Domain\ValueObject'
-                alias: ValueObject
+                dir: '%kernel.project_dir%/src/Order/Infrastructure/Database/ORM/Entity'
+                prefix: 'App\Order\Domain\Entity'
+                alias: OrderEntity
+            OrderValueObjects:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Order/Infrastructure/Database/ORM/ValueObject'
+                prefix: 'App\Order\Domain\ValueObject'
+                alias: OrderValueObject
+
+            NotificationEntity:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Notification/Infrastructure/Database/ORM/Entity'
+                prefix: 'App\Notification\Domain\Entity'
+                alias: OrderEntity
+            NotificationValueObjects:
+                type: xml
+                is_bundle: false
+                dir: '%kernel.project_dir%/src/Notification/Infrastructure/Database/ORM/ValueObject'
+                prefix: 'App/Notification/Domain\ValueObject'
+                alias: OrderValueObject
         controller_resolver:
             auto_mapping: true
 
 when@test:
     doctrine:
         dbal:
-            # "TEST_TOKEN" is typically set by ParaTest
             dbname_suffix: '_test%env(default::TEST_TOKEN)%'
 
 when@prod:

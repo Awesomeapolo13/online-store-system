@@ -1,0 +1,24 @@
+parameters:
+  paths:
+    - ./src
+  exclude_files:
+    - '#.*\/src\/.*\/Infrastructure\/Adapter\/.*#'
+    - '#.*\/src\/.*\/Infrastructure\/Api\/.*#'
+  layers:
+    - name: Shared
+      collectors:
+        - type: directory
+          value: /src/Shared/.*
+    - name: Order
+      collectors:
+        - type: directory
+          value: /src/Order/.*
+    - name: Notification
+      collectors:
+        - type: directory
+          value: /src/Notification/.*
+  ruleset:
+    Order:
+      - Shared
+    Notification:
+      - Shared
