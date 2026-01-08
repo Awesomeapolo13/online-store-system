@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Infrastructure\Bus;
+namespace App\Shared\Infrastructure;
 
 use App\Application\Query\QueryBusInterface;
 use App\Application\Query\QueryInterface;
