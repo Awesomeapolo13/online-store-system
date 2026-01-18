@@ -34,3 +34,16 @@ services:
         App\Shared\Application\Event\EventHandlerInterface:
             tags:
                 - { name: messenger.message_handler, bus: event.bus }
+
+    App\Shared\Infrastructure\Messaging\RabbitMQ\Connection\AMQPRabbitMQConnection:
+        arguments:
+            $rabbitHost: '%rabbitmq.host%'
+            $rabbitPort: '%rabbitmq.port%'
+            $rabbitUser: '%rabbitmq.user%'
+            $rabbitPassword: '%rabbitmq.password%'
+            $rabbitVhost: '%rabbitmq.vhost%'
+
+    App\Shared\Infrastructure\Messaging\RabbitMQ\Config\RabbitMQInfrastructureConfig:
+        factory: ['@App\Shared\Infrastructure\Messaging\RabbitMQ\Config\RabbitMQInfrastructureConfigFactory', 'createFromArray']
+        arguments: ['%rabbitmq_infrastructure%']
+
