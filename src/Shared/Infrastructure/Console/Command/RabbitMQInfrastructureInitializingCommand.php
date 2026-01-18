@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
-    name: 'app:init_queues_infrastructure_for_rabbitmq',
+    name: 'app:rabbitmq:infrastructure_init',
     description: 'Initialize queues infrastructure for RabbitMQ.',
     help: 'This command initialize queues infrastructure for RabbitMQ.',
 
