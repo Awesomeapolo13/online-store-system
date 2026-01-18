@@ -33,10 +33,10 @@ parameters:
           - exchange: commands
             routing_key: cart.command.create
 
-    'dlx.failed':
-      durable: true
-      auto_delete: false
-      exclusive: false
-      bindings:
-        - exchange: dlx
-          routing_key: '#' # Все failed сообщения
+      'dlx.failed':
+        durable: true
+        auto_delete: false
+        exclusive: false
+        bindings:
+          - exchange: dlx
+            routing_key: '#' # Все failed сообщения
