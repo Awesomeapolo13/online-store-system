@@ -1,0 +1,42 @@
+parameters:
+  rabbitmq_infrastructure:
+    exchanges:
+      commands:
+        type: direct
+        durable: true
+        auto_delete: false
+        internal: false
+
+      events:
+        type: topic
+        durable: true
+        auto_delete: false
+        internal: false
+
+      # Для dead letter (необработанные сообщения)
+      dlx:
+        type: topic
+        durable: true
+        auto_delete: false
+        internal: false
+
+    queues:
+      'cart.command.create':
+        durable: true
+        auto_delete: false
+        exclusive: false
+        arguments:
+          x-message-ttl: 18000 #5 минут
+          x-dead-letter-exchange: dlx
+          x-dead-letter-routing-key: cart.command.create.failed
+        bindings:
+          - exchange: commands
+            routing_key: cart.command.create
+
+      'dlx.failed':
+        durable: true
+        auto_delete: false
+        exclusive: false
+        bindings:
+          - exchange: dlx
+            routing_key: '#' # Все failed сообщения
