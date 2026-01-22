@@ -1,0 +1,23 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd"
+>
+    <embeddable name="App\Order\Domain\ValueObject\CartType">
+        <field name="isDelivery" column="is_delivery" type="boolean">
+            <options>
+                <option name="default">false</option>
+            </options>
+        </field>
+        <field name="isExpress" column="is_express" type="boolean">
+            <options>
+                <option name="default">true</option>
+            </options>
+        </field>
+        <field name="hasAlcohol" column="has_alcohol" type="boolean">
+            <options>
+                <option name="default">false</option>
+            </options>
+        </field>
+    </embeddable>
+</doctrine-mapping>
