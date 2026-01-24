@@ -51,6 +51,8 @@ test:
 	${DOCKER_EXEC_PHP} php bin/phpunit
 cache:
 	${DOCKER_EXEC_PHP} php bin/console cache:clear
+m_create:
+	${DOCKER_EXEC_PHP} php bin/console doctrine:migrations:diff
 m_run:
 	${DOCKER_EXEC_PHP} php bin/console doctrine:migration:migrate
 fx_load:
