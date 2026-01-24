@@ -16,8 +16,8 @@
         <field name="userId" column="user_id" type="integer" length="11" nullable="true"/>
         <field name="shopNum" column="shop_num" type="integer" length="11" nullable="true"/>
         <embedded name="region" use-column-prefix="false" class="App\Order\Domain\ValueObject\Region"/>
-        <embedded name="type" use-column-prefix="false" class="App\Order\Domain\ValueObject\CartType"/>
-        <field name="orderDate" column="order_date" type="datetime"/>
+        <embedded name="type" use-column-prefix="false" class="App\Order\Domain\ValueObject\Type"/>
+        <embedded name="orderDate" use-column-prefix="false" class="App\Order\Domain\ValueObject\OrderDate"/>
         <field name="createdAt" column="created_at" type="datetime_immutable"/>
         <field name="updatedAt" column="updated_at" type="datetime_immutable"/>
         <field name="deletedAt" column="deleted_at" type="datetime_immutable" nullable="true"/>

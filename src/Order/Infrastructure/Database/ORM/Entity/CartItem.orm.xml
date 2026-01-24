@@ -6,7 +6,7 @@
     <entity
             name="App\Order\Domain\Entity\CartItem"
             table="order_cart_item"
-            repository-class="App\Order\Infrastructure\Repository\DoctrineBasketItemRepository"
+            repository-class="App\Order\Infrastructure\Repository\DoctrineCartItemRepository"
     >
 
         <id name="id" type="integer" length="11">
@@ -15,16 +15,11 @@
 
         <field name="supCode" column="sup_code" type="string"/>
         <many-to-one field="cart" target-entity="App\Order\Domain\Entity\Cart">
-            <join-column name="cart_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
+            <join-column name="cart_id" referenced-column-name="id" nullable="false"/>
         </many-to-one>
 
         <embedded name="perItemPrice" class="App\Order\Domain\ValueObject\Price" column-prefix="per_item_"/>
         <embedded name="totalCost" class="App\Order\Domain\ValueObject\Cost" column-prefix="total_"/>
-        <field name="isSlicing" column="is_slicing" type="boolean">
-            <options>
-                <option name="default">false</option>
-            </options>
-        </field>
         <field name="quantity" column="quantity" type="integer"/>
         <field name="createdAt" column="created_at" type="datetime_immutable" length="11"/>
         <field name="updatedAt" column="updated_at" type="datetime_immutable" length="11"/>
