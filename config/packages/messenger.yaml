@@ -1,20 +1,48 @@
 framework:
   messenger:
+    failure_transport: failed
+
     default_bus: command.bus
     buses:
       command.bus:
         middleware:
+          - 'App\Shared\Infrastructure\Messaging\Messenger\Middleware\AmqpRoutingKeyMiddleware'
+          - validation
           - doctrine_transaction
-      query.bus:
       event.bus:
+        default_middleware: allow_no_handlers
+          - '\App\Shared\Infrastructure\Messaging\Messenger\Middleware\AmqpRoutingKeyMiddleware'
+      query.bus:
         default_middleware: allow_no_handlers
 
     transports:
-    # https://symfony.com/doc/current/messenger.html#transport-configuration
-    # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-    # failed: 'doctrine://default?queue_name=failed'
-    # sync: 'sync://'
+      commands:
+        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
+        options:
+          auto_setup: false
+          exchange:
+            name: commands
+            type: direct
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+
+        events:
+          dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+          serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
+          options:
+            auto_setup: false
+            exchange:
+              name: events
+              type: topic
+          retry_strategy:
+            max_retries: 3
+            delay: 1000
+
+        failed:
+          dsn: 'doctrine://default?queue_name=failed'
 
     routing:
-    # Route your messages to the transports
-    # 'App\Message\YourMessage': async
+      'App\Application\Command\*': commands
+      'App\Domain\Event\*': events
