@@ -26,4 +26,11 @@ readonly class OrderDate
 
         return new self($orderDate);
     }
+
+    public static function createDefault(): self
+    {
+        $nextHourDate = new \DateTimeImmutable('+1 hour');
+
+        return new self($nextHourDate);
+    }
 }
