@@ -7,37 +7,43 @@ namespace App\Shared\Infrastructure\Messaging\RabbitMQ\Connection;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
-final readonly class AMQPRabbitMQConnection
+final class AMQPRabbitMQConnection
 {
-    private AMQPStreamConnection $connection;
+    private ?AMQPStreamConnection $connection = null;
+
+    public function __construct(
+        private readonly string $rabbitHost,
+        private readonly int $rabbitPort,
+        private readonly string $rabbitUser,
+        private readonly string $rabbitPassword,
+        private readonly string $rabbitVhost = '/',
+    ) {
+    }
 
     /**
      * @throws \Exception
      */
-    public function __construct(
-        string $rabbitHost,
-        int $rabbitPort,
-        string $rabbitUser,
-        string $rabbitPassword,
-        string $rabbitVhost = '/',
-    ) {
-        $this->connection = new AMQPStreamConnection(
-            $rabbitHost,
-            $rabbitPort,
-            $rabbitUser,
-            $rabbitPassword,
-            $rabbitVhost,
-        );
-    }
-
     public function getConnection(): AMQPStreamConnection
     {
+        if (!$this->connection?->isConnected()) {
+            $this->connection = new AMQPStreamConnection(
+                $this->rabbitHost,
+                $this->rabbitPort,
+                $this->rabbitUser,
+                $this->rabbitPassword,
+                $this->rabbitVhost,
+            );
+        }
+
         return $this->connection;
     }
 
+    /**
+     * @throws \Exception
+     */
     public function getChannel(): AMQPChannel
     {
-        return $this->connection->channel();
+        return $this->getConnection()->channel();
     }
 
     /**
@@ -45,6 +51,14 @@ final readonly class AMQPRabbitMQConnection
      */
     public function close(): void
     {
-        $this->connection->close();
+        if ($this->connection?->isConnected()) {
+            $this->connection->close();
+            $this->connection = null;
+        }
+    }
+
+    public function __destruct()
+    {
+        $this->close();
     }
 }
