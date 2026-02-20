@@ -1,6 +1,5 @@
 parameters:
-  rabbitmq.routing:
-    commands:
+  rabbitmq.routing.commands:
       'App\Order\Application\Command\CreateNewCart\CreateNewCartCommand': 'cart.command.create'
 
-    events:
+  rabbitmq.routing.events:
