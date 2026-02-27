@@ -36,7 +36,7 @@ final readonly class CreateNewCartHandler implements CommandHandlerInterface
                 updatedAt: new \DateTimeImmutable(),
                 totalCost: Cost::zero(),
                 userId: $userId,
-                shopNum: self::DEFAULT_SHOP_ID
+                shopNum: self::DEFAULT_SHOP_ID,
             );
 
             $this->cartRepository->save($cart);
@@ -48,10 +48,12 @@ final readonly class CreateNewCartHandler implements CommandHandlerInterface
             ]);
         } catch (\Throwable $exception) {
             $this->logger->error('Error while cart creating.', [
-                'user_id' => $cart->getUserId(),
+                'user_id' => $userId,
                 'region' => $region->getRegionCode(),
                 'message' => $exception->getMessage(),
             ]);
+
+            throw $exception;
         }
     }
 }
