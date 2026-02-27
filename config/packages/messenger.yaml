@@ -19,7 +19,7 @@ framework:
 
     transports:
       cart_create_command:
-        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        dsn: '%env(AMQP_CONSUME_DSN)%'
         serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
         options:
           auto_setup: false
@@ -34,7 +34,7 @@ framework:
           delay: 1000
 
       commands:
-        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        dsn: '%env(AMQP_CONSUME_DSN)%'
         serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
         options:
           auto_setup: false
@@ -46,7 +46,7 @@ framework:
           delay: 1000
 
       events:
-        dsn: '%env(MESSENGER_TRANSPORT_DSN)%'
+        dsn: '%env(AMQP_CONSUME_DSN)%'
         serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
         options:
           auto_setup: false

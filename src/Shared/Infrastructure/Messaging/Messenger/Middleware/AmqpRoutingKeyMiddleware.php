@@ -6,7 +6,7 @@ namespace App\Shared\Infrastructure\Messaging\Messenger\Middleware;
 
 use App\Shared\Application\Command\CommandInterface;
 use App\Shared\Domain\Event\EventInterface as DomainEventInterface;
-use App\Shared\Infrastructure\Messaging\Messenger\Stamp\AmqpRoutingKeyStamp;
+use App\Shared\Infrastructure\Messaging\Messenger\Stamp\AMQPRoutingKeyStamp;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Routing\RoutingKeyResolver;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Middleware\MiddlewareInterface;
@@ -32,7 +32,7 @@ final readonly class AmqpRoutingKeyMiddleware implements MiddlewareInterface
             };
 
             if ($routingKey !== null) {
-                $envelope = $envelope->with(new AmqpRoutingKeyStamp($routingKey));
+                $envelope = $envelope->with(new AMQPRoutingKeyStamp($routingKey));
             }
         }
 

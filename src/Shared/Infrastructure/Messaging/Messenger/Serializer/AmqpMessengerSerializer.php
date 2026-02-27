@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Messaging\Messenger\Serializer;
 
-use App\Shared\Infrastructure\Messaging\Messenger\Stamp\AmqpRoutingKeyStamp;
+use App\Shared\Infrastructure\Messaging\Messenger\Stamp\AMQPRoutingKeyStamp;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Transport\Serialization\SerializerInterface;
 use Symfony\Component\Serializer\SerializerInterface as SymfonySerializerInterface;
@@ -38,7 +38,7 @@ final readonly class AmqpMessengerSerializer implements SerializerInterface
         // Восстанавливаем routing key из headers
         if (isset($headers['routing_key'])) {
             $envelope = $envelope->with(
-                new AmqpRoutingKeyStamp($headers['routing_key'])
+                new AMQPRoutingKeyStamp($headers['routing_key'])
             );
         }
 
@@ -57,8 +57,8 @@ final readonly class AmqpMessengerSerializer implements SerializerInterface
         ];
 
         // Добавляем routing key в headers
-        $routingKeyStamp = $envelope->last(AmqpRoutingKeyStamp::class);
-        if ($routingKeyStamp instanceof AmqpRoutingKeyStamp) {
+        $routingKeyStamp = $envelope->last(AMQPRoutingKeyStamp::class);
+        if ($routingKeyStamp instanceof AMQPRoutingKeyStamp) {
             $headers['routing_key'] = $routingKeyStamp->routingKey;
         }
 
@@ -68,7 +68,7 @@ final readonly class AmqpMessengerSerializer implements SerializerInterface
         ];
 
         // AMQP routing key для publish
-        if ($routingKeyStamp instanceof AmqpRoutingKeyStamp) {
+        if ($routingKeyStamp instanceof AMQPRoutingKeyStamp) {
             $amqpEnvelope['routing_key'] = $routingKeyStamp->routingKey;
         }
 

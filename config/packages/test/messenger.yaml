@@ -1,0 +1,14 @@
+framework:
+  messenger:
+    # В тестах можем переключиться на in-memory транспорт
+    transports:
+      # Для юнит тестов - синхронная обработка
+      sync:
+        dsn: 'sync://'
+
+      # Для интеграционных тестов - async но in-memory
+      async_test:
+        dsn: 'in-memory://'
+
+    routing:
+      'App\Order\Application\Command\CreateNewCart\CreateNewCartCommand': sync

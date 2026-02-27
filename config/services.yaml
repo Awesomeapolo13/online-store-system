@@ -59,3 +59,7 @@ services:
     App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer:
         arguments:
             $serializer: '@serializer'
+
+    App\Shared\Infrastructure\Messaging\Messenger\Transport\AMQPTransportFactory:
+        tags:
+            - { name: messenger.transport_factory }
