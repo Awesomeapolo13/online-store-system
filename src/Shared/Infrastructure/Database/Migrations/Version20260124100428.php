@@ -33,7 +33,7 @@ final class Version20260124100428 extends AbstractMigration
                         is_express BOOLEAN DEFAULT true NOT NULL,
                         total_cost NUMERIC(10, 2) NOT NULL,
                         PRIMARY KEY(id)
-                 );'
+                 );',
         );
         $this->addSql('CREATE UNIQUE INDEX UNIQ_ACTIVE_CART_IDX ON order_cart (user_id) WHERE deleted_at IS NULL');
         $this->addSql('COMMENT ON COLUMN order_cart.created_at IS \'(DC2Type:datetime_immutable)\'');
@@ -52,14 +52,14 @@ final class Version20260124100428 extends AbstractMigration
                                 per_item_price NUMERIC(10, 2) NOT NULL,
                                 total_cost NUMERIC(10, 2) NOT NULL,
                                 PRIMARY KEY(id)
-                 );'
+                 );',
         );
         $this->addSql('CREATE INDEX IDX_4C795EDF1AD5CDBF ON order_cart_item (cart_id);');
         $this->addSql('COMMENT ON COLUMN order_cart_item.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN order_cart_item.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql(
             'ALTER TABLE order_cart_item
-                        ADD CONSTRAINT FK_4C795EDF1AD5CDBF FOREIGN KEY (cart_id) REFERENCES order_cart (id);'
+                        ADD CONSTRAINT FK_4C795EDF1AD5CDBF FOREIGN KEY (cart_id) REFERENCES order_cart (id);',
         );
     }
 

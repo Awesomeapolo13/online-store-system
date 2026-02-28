@@ -10,5 +10,6 @@ final readonly class AMQPRoutingKeyStamp implements StampInterface
 {
     public function __construct(
         public string $routingKey,
-    ) {}
+    ) {
+    }
 }

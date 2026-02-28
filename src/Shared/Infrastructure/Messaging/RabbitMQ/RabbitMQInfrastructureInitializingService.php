@@ -35,14 +35,14 @@ final readonly class RabbitMQInfrastructureInitializingService
 
     private function declareExchanges(AMQPChannel $channel, RabbitMQInfrastructureConfig $config): void
     {
-        /** @var  $exchange */
+        /** @var $exchange */
         foreach ($config->exchanges as $exchange) {
             $this->logger->info(
                 "Declared exchange {$exchange->name}",
                 [
                     'name' => $exchange->name,
                     'type' => $exchange->type,
-                ]
+                ],
             );
 
             $channel->exchange_declare(
@@ -63,7 +63,7 @@ final readonly class RabbitMQInfrastructureInitializingService
                 [
                     'name' => $queue->name,
                     'binding_count' => count($queue->bindings),
-                ]
+                ],
             );
 
             $arguments = new AMQPTable($queue->arguments);
@@ -82,7 +82,7 @@ final readonly class RabbitMQInfrastructureInitializingService
                         'queue' => $queue->name,
                         'exchange' => $binding->exchange,
                         'routing_key' => $binding->routingKey,
-                    ]
+                    ],
                 );
 
                 $channel->queue_bind(

@@ -30,6 +30,17 @@ final class AMQPReceiver implements ReceiverInterface
     ) {
     }
 
+    public function __destruct()
+    {
+        if ($this->channel !== null) {
+            try {
+                $this->channel->close();
+            } catch (\Throwable $exception) {
+                // Ignore
+            }
+        }
+    }
+
     public function get(): iterable
     {
         $this->setupChannel();
@@ -113,7 +124,7 @@ final class AMQPReceiver implements ReceiverInterface
         $this->channel->basic_qos(
             prefetch_size: 0,
             prefetch_count: $this->prefetchCount,
-            a_global: false
+            a_global: false,
         );
 
         $this->logger->info('AMQP channel created', [
@@ -137,7 +148,7 @@ final class AMQPReceiver implements ReceiverInterface
                 consumer_tag: '',
                 callback: function (AMQPMessage $message) use ($queueName): void {
                     $this->onMessageReceived($message, $queueName);
-                }
+                },
             );
         }
 
@@ -166,7 +177,8 @@ final class AMQPReceiver implements ReceiverInterface
                     deliveryTag: $message->getDeliveryTag(),
                     queueName: $queueName,
                 ))
-                ->with(new TransportMessageIdStamp($message->getDeliveryTag()));
+                ->with(new TransportMessageIdStamp($message->getDeliveryTag()))
+            ;
             $this->receivedEnvelopes[] = $envelope;
         } catch (\Throwable $exception) {
             $this->logger->error('Failed to process received message', [
@@ -176,17 +188,6 @@ final class AMQPReceiver implements ReceiverInterface
 
             // Отклоняем сообщение при ошибке десериализации
             $message->nack(requeue: false);
-        }
-    }
-
-    public function __destruct()
-    {
-        if ($this->channel !== null) {
-            try {
-                $this->channel->close();
-            } catch (\Throwable $exception) {
-                // Ignore
-            }
         }
     }
 }

@@ -8,7 +8,7 @@ final readonly class RabbitMQInfrastructureConfig
 {
     /**
      * @param ExchangeConfigElement[] $exchanges
-     * @param QueueConfigElement[] $queues
+     * @param QueueConfigElement[]    $queues
      */
     public function __construct(
         public array $exchanges,

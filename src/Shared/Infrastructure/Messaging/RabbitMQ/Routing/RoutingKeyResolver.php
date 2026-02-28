@@ -20,9 +20,7 @@ final readonly class RoutingKeyResolver
         $class = $command::class;
 
         if (!isset($this->commandRoutingMap[$class])) {
-            throw new \InvalidArgumentException(
-                sprintf('No routing key configured for command "%s"', $class)
-            );
+            throw new \InvalidArgumentException(sprintf('No routing key configured for command "%s"', $class));
         }
 
         return $this->commandRoutingMap[$class];
@@ -33,9 +31,7 @@ final readonly class RoutingKeyResolver
         $class = $event::class;
 
         if (!isset($this->eventRoutingMap[$class])) {
-            throw new \InvalidArgumentException(
-                sprintf('No routing key configured for event "%s"', $class)
-            );
+            throw new \InvalidArgumentException(sprintf('No routing key configured for event "%s"', $class));
         }
 
         return $this->eventRoutingMap[$class];

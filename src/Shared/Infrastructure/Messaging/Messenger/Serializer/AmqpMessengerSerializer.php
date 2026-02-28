@@ -30,7 +30,7 @@ final readonly class AmqpMessengerSerializer implements SerializerInterface
         $message = $this->serializer->deserialize(
             $body,
             $type,
-            'json'
+            'json',
         );
 
         $envelope = new Envelope($message);
@@ -38,7 +38,7 @@ final readonly class AmqpMessengerSerializer implements SerializerInterface
         // Восстанавливаем routing key из headers
         if (isset($headers['routing_key'])) {
             $envelope = $envelope->with(
-                new AMQPRoutingKeyStamp($headers['routing_key'])
+                new AMQPRoutingKeyStamp($headers['routing_key']),
             );
         }
 

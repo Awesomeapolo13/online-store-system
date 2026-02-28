@@ -10,8 +10,8 @@ use Symfony\Component\Messenger\Transport\TransportInterface;
 final readonly class AMQPTransport implements TransportInterface
 {
     public function __construct(
-      private AMQPReceiver $receiver,
-      private AMQPSender $sender,
+        private AMQPReceiver $receiver,
+        private AMQPSender $sender,
     ) {
     }
 
@@ -27,7 +27,7 @@ final readonly class AMQPTransport implements TransportInterface
 
     public function reject(Envelope $envelope): void
     {
-       $this->receiver->reject($envelope);
+        $this->receiver->reject($envelope);
     }
 
     /**

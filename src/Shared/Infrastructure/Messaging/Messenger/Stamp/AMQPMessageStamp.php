@@ -11,5 +11,6 @@ final readonly class AMQPMessageStamp implements StampInterface
     public function __construct(
         public int $deliveryTag,
         public string $queueName,
-    ) {}
+    ) {
+    }
 }

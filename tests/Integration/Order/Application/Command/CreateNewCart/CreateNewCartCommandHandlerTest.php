@@ -34,6 +34,17 @@ class CreateNewCartCommandHandlerTest extends KernelTestCase
         $this->entityManager = $container->get(EntityManagerInterface::class);
     }
 
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this
+            ->entityManager
+            ->createQuery('DELETE FROM ' . Cart::class . ' c WHERE c.userId IN (:userIds)')
+            ->setParameter('userIds', [self::USER_ID_CREATE_NEW_CART_1, self::USER_ID_CREATE_NEW_CART_2])
+            ->execute()
+        ;
+    }
+
     public function testCreateNewCart(): void
     {
         $region = new Region(RegionCodeEnum::NIZHNY_NOVGOROD->value);
@@ -77,15 +88,5 @@ class CreateNewCartCommandHandlerTest extends KernelTestCase
             $this::assertSame(self::USER_ID_CREATE_NEW_CART_2, $cart->getUserId(), 'User ID in a cart should be the same');
             $this::assertSame($region->getRegionCode(), $cart->getRegion()->getRegionCode(), 'Region code should be the same');
         }
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        $this
-            ->entityManager
-            ->createQuery('DELETE FROM ' . Cart::class . ' c WHERE c.userId IN (:userIds)')
-            ->setParameter('userIds', [self::USER_ID_CREATE_NEW_CART_1, self::USER_ID_CREATE_NEW_CART_2])
-            ->execute();
     }
 }

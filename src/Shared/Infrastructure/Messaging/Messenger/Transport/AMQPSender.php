@@ -23,7 +23,19 @@ final class AMQPSender implements SenderInterface
         private readonly SerializerInterface $serializer,
         private readonly string $exchangeName,
         private readonly LoggerInterface $logger,
-    ) {}
+    ) {
+    }
+
+    public function __destruct()
+    {
+        if ($this->channel !== null) {
+            try {
+                $this->channel->close();
+            } catch (\Throwable $e) {
+                // Игнорируем ошибки при закрытии
+            }
+        }
+    }
 
     /**
      * @throws \Exception
@@ -66,13 +78,8 @@ final class AMQPSender implements SenderInterface
                 'routing_key' => $routingKey,
                 'message_type' => $headers['type'] ?? 'unknown',
             ]);
-
         } catch (\Throwable $exception) {
-            throw new TransportException(
-                'Failed to publish message: ' . $exception->getMessage(),
-                0,
-                $exception
-            );
+            throw new TransportException('Failed to publish message: ' . $exception->getMessage(), 0, $exception);
         }
 
         return $envelope;
@@ -92,16 +99,5 @@ final class AMQPSender implements SenderInterface
         $this->logger->info('AMQP sender channel created', [
             'exchange' => $this->exchangeName,
         ]);
-    }
-
-    public function __destruct()
-    {
-        if ($this->channel !== null) {
-            try {
-                $this->channel->close();
-            } catch (\Throwable $e) {
-                // Игнорируем ошибки при закрытии
-            }
-        }
     }
 }

@@ -20,6 +20,11 @@ final class AMQPRabbitMQConnection
     ) {
     }
 
+    public function __destruct()
+    {
+        $this->close();
+    }
+
     /**
      * @throws \Exception
      */
@@ -55,10 +60,5 @@ final class AMQPRabbitMQConnection
             $this->connection->close();
             $this->connection = null;
         }
-    }
-
-    public function __destruct()
-    {
-        $this->close();
     }
 }
