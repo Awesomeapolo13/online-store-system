@@ -10,15 +10,18 @@ use App\Order\Domain\Entity\Cart;
 use App\Order\Domain\Enum\RegionCodeEnum;
 use App\Order\Domain\ValueObject\Region;
 use App\Order\Infrastructure\Repository\DoctrineCartRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 
 class CreateNewCartCommandHandlerTest extends KernelTestCase
 {
     private const int USER_ID_CREATE_NEW_CART_1 = 4;
     private const int USER_ID_CREATE_NEW_CART_2 = 5;
+    private const int EXPECTED_CART_COUNT = 1;
 
     private CreateNewCartHandler $handler;
     private DoctrineCartRepository $repository;
+    private EntityManagerInterface $entityManager;
 
     protected function setUp(): void
     {
@@ -28,11 +31,7 @@ class CreateNewCartCommandHandlerTest extends KernelTestCase
         $container = self::getContainer();
         $this->handler = $container->get(CreateNewCartHandler::class);
         $this->repository = $container->get(DoctrineCartRepository::class);
-    }
-
-    protected function tearDown(): void
-    {
-        // ToDO: Удалить созданные во время тестов данные.
+        $this->entityManager = $container->get(EntityManagerInterface::class);
     }
 
     public function testCreateNewCart(): void
@@ -46,7 +45,7 @@ class CreateNewCartCommandHandlerTest extends KernelTestCase
         $handler = $this->handler;
         $handler($command);
 
-        $cart = $this->repository->findOneBy(['userId' => self::USER_ID_CREATE_NEW_CART_1, 'region' => $region]);
+        $cart = $this->repository->findOneBy(['userId' => self::USER_ID_CREATE_NEW_CART_1, 'region.regionCode' => $region->getRegionCode()]);
 
         $this::assertInstanceOf(Cart::class, $cart, 'Cart should be instanceof Cart');
         $this::assertSame(self::USER_ID_CREATE_NEW_CART_1, $cart->getUserId(), 'User ID in a cart should be the same');
@@ -55,7 +54,6 @@ class CreateNewCartCommandHandlerTest extends KernelTestCase
 
     public function testCreateNewDoubleCart(): void
     {
-        // ToDo: Написать тест для проверки невозможности создать дубль корзины для пользователя.
         $region = new Region(RegionCodeEnum::NIZHNY_NOVGOROD->value);
         $command = new CreateNewCartCommand(
             userId: self::USER_ID_CREATE_NEW_CART_2,
@@ -67,5 +65,27 @@ class CreateNewCartCommandHandlerTest extends KernelTestCase
         $handler($command);
         // Second try
         $handler($command);
+
+        $carts = $this->repository->findBy([
+            'userId' => self::USER_ID_CREATE_NEW_CART_2,
+            'deletedAt' => null,
+        ]);
+
+        self::assertCount(self::EXPECTED_CART_COUNT, $carts, 'Should have only one active cart. Got ' . count($carts));
+        foreach ($carts as $cart) {
+            $this::assertInstanceOf(Cart::class, $cart, 'Cart should be instanceof Cart');
+            $this::assertSame(self::USER_ID_CREATE_NEW_CART_2, $cart->getUserId(), 'User ID in a cart should be the same');
+            $this::assertSame($region->getRegionCode(), $cart->getRegion()->getRegionCode(), 'Region code should be the same');
+        }
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        $this
+            ->entityManager
+            ->createQuery('DELETE FROM ' . Cart::class . ' c WHERE c.userId IN (:userIds)')
+            ->setParameter('userIds', [self::USER_ID_CREATE_NEW_CART_1, self::USER_ID_CREATE_NEW_CART_2])
+            ->execute();
     }
 }
