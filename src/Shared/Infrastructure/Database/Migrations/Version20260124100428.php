@@ -35,7 +35,7 @@ final class Version20260124100428 extends AbstractMigration
                         PRIMARY KEY(id)
                  );'
         );
-        $this->addSql('CREATE INDEX UNIQ_ACTIVE_BASKET_IDX ON order_cart (user_id) WHERE deleted_at IS NULL');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_ACTIVE_CART_IDX ON order_cart (user_id) WHERE deleted_at IS NULL');
         $this->addSql('COMMENT ON COLUMN order_cart.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN order_cart.updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN order_cart.deleted_at IS \'(DC2Type:datetime_immutable)\'');
@@ -65,7 +65,6 @@ final class Version20260124100428 extends AbstractMigration
 
     public function down(Schema $schema): void
     {
-        $this->addSql('CREATE SCHEMA public');
         $this->addSql('DROP SEQUENCE order_cart_id_seq CASCADE');
         $this->addSql('DROP SEQUENCE order_cart_item_id_seq CASCADE');
         $this->addSql('ALTER TABLE order_cart_item DROP CONSTRAINT FK_4C795EDF1AD5CDBF');
