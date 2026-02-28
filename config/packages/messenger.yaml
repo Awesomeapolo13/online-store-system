@@ -32,7 +32,6 @@ framework:
         retry_strategy:
           max_retries: 3
           delay: 1000
-
       commands:
         dsn: '%env(AMQP_CONSUME_DSN)%'
         serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
@@ -44,7 +43,6 @@ framework:
         retry_strategy:
           max_retries: 3
           delay: 1000
-
       events:
         dsn: '%env(AMQP_CONSUME_DSN)%'
         serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
