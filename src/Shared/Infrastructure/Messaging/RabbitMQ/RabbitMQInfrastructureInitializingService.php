@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Messaging\RabbitMQ;
 
+use App\Shared\Infrastructure\Messaging\RabbitMQ\Config\ExchangeConfigElement;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Config\RabbitMQInfrastructureConfig;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Connection\AMQPRabbitMQConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -35,14 +36,13 @@ final readonly class RabbitMQInfrastructureInitializingService
 
     private function declareExchanges(AMQPChannel $channel, RabbitMQInfrastructureConfig $config): void
     {
-        /** @var  $exchange */
         foreach ($config->exchanges as $exchange) {
             $this->logger->info(
                 "Declared exchange {$exchange->name}",
                 [
                     'name' => $exchange->name,
                     'type' => $exchange->type,
-                ]
+                ],
             );
 
             $channel->exchange_declare(
@@ -63,7 +63,7 @@ final readonly class RabbitMQInfrastructureInitializingService
                 [
                     'name' => $queue->name,
                     'binding_count' => count($queue->bindings),
-                ]
+                ],
             );
 
             $arguments = new AMQPTable($queue->arguments);
@@ -82,7 +82,7 @@ final readonly class RabbitMQInfrastructureInitializingService
                         'queue' => $queue->name,
                         'exchange' => $binding->exchange,
                         'routing_key' => $binding->routingKey,
-                    ]
+                    ],
                 );
 
                 $channel->queue_bind(

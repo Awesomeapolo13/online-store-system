@@ -1,20 +1,68 @@
 framework:
   messenger:
+    failure_transport: failed
+
     default_bus: command.bus
     buses:
       command.bus:
         middleware:
+          - 'App\Shared\Infrastructure\Messaging\Messenger\Middleware\AmqpRoutingKeyMiddleware'
+          - validation
           - doctrine_transaction
-      query.bus:
       event.bus:
+        default_middleware: allow_no_handlers
+        middleware:
+          - 'App\Shared\Infrastructure\Messaging\Messenger\Middleware\AmqpRoutingKeyMiddleware'
+          - validation
+      query.bus:
         default_middleware: allow_no_handlers
 
     transports:
-    # https://symfony.com/doc/current/messenger.html#transport-configuration
-    # async: '%env(MESSENGER_TRANSPORT_DSN)%'
-    # failed: 'doctrine://default?queue_name=failed'
-    # sync: 'sync://'
+      cart_create_command:
+        dsn: '%env(AMQP_CONSUME_DSN)%'
+        serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
+        options:
+          auto_setup: false
+          exchange:
+            name: commands
+            type: direct
+          queues:
+            cart.command.create:
+              binding_keys: [ 'cart.command.create' ]
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+      commands:
+        dsn: '%env(AMQP_CONSUME_DSN)%'
+        serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
+        options:
+          auto_setup: false
+          exchange:
+            name: commands
+            type: direct
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+      events:
+        dsn: '%env(AMQP_CONSUME_DSN)%'
+        serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
+        options:
+          auto_setup: false
+          exchange:
+            name: events
+            type: topic
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+
+      failed:
+        dsn: 'doctrine://default?queue_name=failed'
 
     routing:
-    # Route your messages to the transports
-    # 'App\Message\YourMessage': async
+      'App\Shared\Application\Command\*': commands
+      'App\Order\Application\Command\CreateNewCart\CreateNewCartCommand': cart_create_command
+      'App\Notification\Application\Command\*': commands
+
+      'App\Shared\Domain\Event\*': events
+      'App\Order\Domain\Event\*': events
+      'App\Notification\Domain\Event\*': events

@@ -1,0 +1,49 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity
+            name="App\Order\Domain\Entity\Cart"
+            table="order_cart"
+            repository-class="App\Order\Infrastructure\Repository\DoctrineCartRepository"
+    >
+
+        <id name="id" type="integer" length="11">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="userId" column="user_id" type="integer" length="11" nullable="true"/>
+        <field name="shopNum" column="shop_num" type="integer" length="11" nullable="true"/>
+        <embedded name="region" use-column-prefix="false" class="App\Order\Domain\ValueObject\Region"/>
+        <embedded name="type" use-column-prefix="false" class="App\Order\Domain\ValueObject\Type"/>
+        <embedded name="orderDate" use-column-prefix="false" class="App\Order\Domain\ValueObject\OrderDate"/>
+        <field name="createdAt" column="created_at" type="datetime_immutable"/>
+        <field name="updatedAt" column="updated_at" type="datetime_immutable"/>
+        <field name="deletedAt" column="deleted_at" type="datetime_immutable" nullable="true"/>
+        <embedded name="totalCost" class="App\Order\Domain\ValueObject\Cost" column-prefix="total_"/>
+        <field name="version" type="integer" version="true"/>
+
+        <one-to-many field="cartItems" target-entity="App\Order\Domain\Entity\CartItem" mapped-by="cart">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="preRemove" method="markAsDeleted"/>
+            <lifecycle-callback type="preUpdate" method="updateTimestamps"/>
+            <lifecycle-callback type="postLoad" method="initializeDomainEvents"/>
+        </lifecycle-callbacks>
+
+        <indexes>
+            <index name="UNIQ_ACTIVE_BASKET_IDX" columns="user_id">
+                <options>
+                    <option name="where">deleted_at IS NULL</option>
+                    <option name="unique">true</option>
+                </options>
+            </index>
+        </indexes>
+    </entity>
+</doctrine-mapping>

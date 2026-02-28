@@ -4,26 +4,14 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
     orm:
+        default_repository_class: Doctrine\ORM\EntityRepository
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
         report_fields_where_declared: true
-        validate_xml_mapping: true
+        validate_xml_mapping: false
         naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
         auto_mapping: true
         mappings:
-            SharedEntity:
-                type: xml
-                is_bundle: false
-                dir: '%kernel.project_dir%/src/Shared/Infrastructure/Database/ORM/Entity'
-                prefix: 'App\Shared\Domain\Entity'
-                alias: SharedEntity
-            SharedValueObjects:
-                type: xml
-                is_bundle: false
-                dir: '%kernel.project_dir%/src/Shared/Infrastructure/Database/ORM/ValueObject'
-                prefix: 'App/Shared/Domain\ValueObject'
-                alias: SharedValueObject
-
             OrderEntity:
                 type: xml
                 is_bundle: false
@@ -55,7 +43,8 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            use_savepoints: true
+            dbname_suffix: '%env(default::TEST_TOKEN)%'
 
 when@prod:
     doctrine:

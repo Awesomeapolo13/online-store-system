@@ -17,7 +17,6 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:rabbitmq:infrastructure_init',
     description: 'Initialize queues infrastructure for RabbitMQ.',
     help: 'This command initialize queues infrastructure for RabbitMQ.',
-
 )]
 final class RabbitMQInfrastructureInitializingCommand extends Command
 {
@@ -65,14 +64,14 @@ final class RabbitMQInfrastructureInitializingCommand extends Command
         } catch (\Throwable $exception) {
             $io->error([
                 'Failed to initialize RabbitMQ infrastructure.',
-                $exception->getMessage()
+                $exception->getMessage(),
             ]);
 
             return Command::FAILURE;
         }
     }
 
-    private function showDryRun(SymfonyStyle $io, RabbitMqInfrastructureConfig $config): void
+    private function showDryRun(SymfonyStyle $io, RabbitMQInfrastructureConfig $config): void
     {
         $io->section('Exchanges to be created:');
         $exchangesTable = [];
@@ -89,8 +88,8 @@ final class RabbitMQInfrastructureInitializingCommand extends Command
         $queuesTable = [];
         foreach ($config->queues as $queue) {
             $bindings = implode(', ', array_map(
-                fn($b) => "{$b->exchange}:{$b->routingKey}",
-                $queue->bindings
+                fn ($b) => "{$b->exchange}:{$b->routingKey}",
+                $queue->bindings,
             ));
 
             $queuesTable[] = [

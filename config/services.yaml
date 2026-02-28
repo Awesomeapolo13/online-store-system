@@ -47,3 +47,19 @@ services:
         factory: ['@App\Shared\Infrastructure\Messaging\RabbitMQ\Config\RabbitMQInfrastructureConfigFactory', 'createFromArray']
         arguments: ['%rabbitmq_infrastructure%']
 
+    App\Shared\Infrastructure\Messaging\RabbitMQ\Routing\RoutingKeyResolver:
+        arguments:
+            $commandRoutingMap: '%rabbitmq.routing.commands%'
+            $eventRoutingMap: '%rabbitmq.routing.events%'
+
+    App\Shared\Infrastructure\Messaging\Messenger\Middleware\AmqpRoutingKeyMiddleware:
+        arguments:
+            $routingKeyResolver: '@App\Shared\Infrastructure\Messaging\RabbitMQ\Routing\RoutingKeyResolver'
+
+    App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer:
+        arguments:
+            $serializer: '@serializer'
+
+    App\Shared\Infrastructure\Messaging\Messenger\Transport\AMQPTransportFactory:
+        tags:
+            - { name: messenger.transport_factory }

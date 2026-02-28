@@ -29,3 +29,8 @@ parameters:
       - Domain
       - Application
       - Framework
+
+  skip_violations:
+    App\Order\Domain\Entity\Cart:
+      - Doctrine\Common\Collections\Collection
+      - Doctrine\Common\Collections\ArrayCollection
