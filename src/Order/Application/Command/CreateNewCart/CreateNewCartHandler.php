@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Order\Application\Command\CreateNewCart;
 
 use App\Order\Domain\Entity\Cart;
+use App\Order\Domain\Exception\CartAlreadyExistsException;
 use App\Order\Domain\Repository\CartRepositoryInterface;
 use App\Order\Domain\ValueObject\Cost;
 use App\Order\Domain\ValueObject\OrderDate;
@@ -46,6 +47,13 @@ final readonly class CreateNewCartHandler implements CommandHandlerInterface
                 'order_date' => $cart->getOrderDate()->getOrderDate()->format(\DateTimeInterface::RFC3339),
                 'user_id' => $cart->getUserId(),
             ]);
+        } catch (CartAlreadyExistsException) {
+            $this->logger->notice('Cart already exists for user, skipping creation', [
+                'user_id' => $userId,
+                'region' => $region->getRegionCode(),
+            ]);
+
+            return;
         } catch (\Throwable $exception) {
             $this->logger->error('Error while cart creating.', [
                 'user_id' => $userId,
