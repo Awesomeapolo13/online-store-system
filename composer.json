@@ -81,7 +81,7 @@
             "vendor/bin/php-cs-fixer fix"
         ],
         "stan": [
-            "vendor/bin/phpstan analyse -c phpstan.neon"
+            "vendor/bin/phpstan analyse -c phpstan.neon --memory-limit=512M"
         ]
     },
     "conflict": {
