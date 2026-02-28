@@ -4,6 +4,7 @@ doctrine:
         profiling_collect_backtrace: '%kernel.debug%'
         use_savepoints: true
     orm:
+        default_repository_class: Doctrine\ORM\EntityRepository
         auto_generate_proxy_classes: true
         enable_lazy_ghost_objects: true
         report_fields_where_declared: true
@@ -42,7 +43,8 @@ doctrine:
 when@test:
     doctrine:
         dbal:
-            dbname_suffix: '_test%env(default::TEST_TOKEN)%'
+            use_savepoints: true
+            dbname_suffix: '%env(default::TEST_TOKEN)%'
 
 when@prod:
     doctrine:

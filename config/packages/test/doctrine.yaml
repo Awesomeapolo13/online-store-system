@@ -1,5 +1,0 @@
-doctrine:
-  dbal:
-    # Отключаем автоматическое добавление _test
-    use_savepoints: true
-    dbname_suffix: '' # Пустая строка = без суффикса
