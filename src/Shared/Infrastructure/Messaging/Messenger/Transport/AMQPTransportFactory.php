@@ -26,10 +26,6 @@ final readonly class AMQPTransportFactory implements TransportFactoryInterface
             throw new \InvalidArgumentException("Invalid DSN: {$dsn}");
         }
 
-        if ($parsedDsn === false) {
-            throw new \InvalidArgumentException("Invalid DSN: {$dsn}");
-        }
-
         $host = $parsedDsn['host'] ?? 'localhost';
         $port = $parsedDsn['port'] ?? 5672;
         $user = $parsedDsn['user'] ?? 'guest';

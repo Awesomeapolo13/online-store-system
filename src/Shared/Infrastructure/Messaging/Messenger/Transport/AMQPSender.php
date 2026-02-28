@@ -46,7 +46,7 @@ final class AMQPSender implements SenderInterface
 
         // Получаем routing key из stamp
         $routingKeyStamp = $envelope->last(AMQPRoutingKeyStamp::class);
-        $routingKey = $routingKeyStamp?->routingKey ?? '';
+        $routingKey = $routingKeyStamp->routingKey ?? '';
 
         if ($routingKey === '') {
             throw new TransportException('Message is missing routing key');

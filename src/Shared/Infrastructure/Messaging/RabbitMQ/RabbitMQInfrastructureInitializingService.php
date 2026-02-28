@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Messaging\RabbitMQ;
 
+use App\Shared\Infrastructure\Messaging\RabbitMQ\Config\ExchangeConfigElement;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Config\RabbitMQInfrastructureConfig;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Connection\AMQPRabbitMQConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -35,7 +36,6 @@ final readonly class RabbitMQInfrastructureInitializingService
 
     private function declareExchanges(AMQPChannel $channel, RabbitMQInfrastructureConfig $config): void
     {
-        /** @var $exchange */
         foreach ($config->exchanges as $exchange) {
             $this->logger->info(
                 "Declared exchange {$exchange->name}",
