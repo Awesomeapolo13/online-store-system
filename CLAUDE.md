@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Online store system built with Symfony 7.3, Doctrine ORM 3.5, and PHP 8.4. The project follows a CQRS (Command Query Responsibility Segregation) architecture pattern with clean separation between Domain, Application, and Infrastructure layers.
+Online store system built with Symfony 7.3, Doctrine ORM 3.5, and PHP 8.4. The project is a **modular monolith** following DDD principles with CQRS pattern.
 
 ## Development Environment
 
@@ -18,23 +18,22 @@ This project runs in Docker. All commands should be executed through the Makefil
 
 ### Common Commands
 
-**Docker Management:**
-- `make dc_up` - Start containers
-- `make dc_stop` - Stop containers
-- `make dc_down` - Remove containers, volumes, and images
-- `make dc_logs` - View container logs
+**Docker:**
+- `make dc_up` / `make dc_stop` / `make dc_down` - Manage containers
 - `make app_bash` - Access PHP container shell
 
 **Development:**
 - `make com_i` - Install Composer dependencies
-- `make com_r` - Require new Composer package
 - `make test` - Run PHPUnit tests
-- `make cache` - Clear Symfony cache
 - `make m_run` - Run database migrations
 - `make fx_load` - Load fixtures
 
+**Static Analysis:**
+- `make stan` - Run PHPStan
+- `make cs_check` / `make cs_fix` - Check/fix code style (PHP-CS-Fixer)
+- `make deptrac` - Check layer and module dependencies
+
 **Single Test Execution:**
-Access the container and run:
 ```bash
 make app_bash
 php bin/phpunit tests/Path/To/SpecificTest.php
@@ -42,88 +41,67 @@ php bin/phpunit tests/Path/To/SpecificTest.php
 
 ## Architecture
 
+### Modular Monolith Structure
+
+The project consists of independent modules, each implementing hexagonal architecture:
+- `Shared` - Common kernel with shared infrastructure (buses, messaging)
+- `Order` - Order management module
+- `Notification` - Notification module
+
+Each module has three layers:
+```
+src/{Module}/
+├── Domain/          # Entities, ValueObjects, Events, Repository interfaces, Exceptions, Enums
+├── Application/     # Commands, Queries, Events handlers, UseCases, Request/Response DTOs, Assemblers
+└── Infrastructure/  # Controllers, Repository implementations, Database (ORM mappings, migrations)
+```
+
 ### CQRS Pattern
 
-This codebase implements CQRS using Symfony Messenger as the bus infrastructure. There are three types of buses:
+Implemented via Symfony Messenger with three buses defined in `config/packages/messenger.yaml`:
 
-**Command Bus** (`command.bus` in messenger.yaml)
-- Handles write operations (state changes)
-- Uses `doctrine_transaction` middleware for automatic transaction management
-- Interface: `App\Application\Command\CommandBusInterface`
-- Implementation: `App\Infrastructure\Bus\CommandBus`
+| Bus | Purpose | Middleware |
+|-----|---------|------------|
+| `command.bus` | Write operations | `doctrine_transaction`, `validation` |
+| `query.bus` | Read operations | `allow_no_handlers` |
+| `event.bus` | Domain events | `allow_no_handlers`, `validation` |
 
-**Query Bus** (`query.bus` in messenger.yaml)
-- Handles read operations (no state changes)
-- Interface: `App\Application\Query\QueryBusInterface`
-- Implementation: `App\Infrastructure\Bus\QueryBus`
+**Interfaces** (in `App\Shared\*`):
+- Commands: `App\Shared\Application\Command\CommandInterface` / `CommandHandlerInterface` / `CommandBusInterface`
+- Queries: `App\Shared\Application\Query\QueryInterface` / `QueryHandlerInterface` / `QueryBusInterface`
+- Events: `App\Shared\Domain\Event\EventInterface`, `App\Shared\Application\Event\EventHandlerInterface` / `EventBusInterface`
 
-**Event Bus** (`event.bus` in messenger.yaml)
-- Handles domain events
-- Uses `allow_no_handlers` middleware
-- Interface: `App\Application\Event\EventBusInterface`
-- Implementation: `App\Infrastructure\Bus\EventBus`
-
-### Layer Structure
-
-**Domain Layer** (`src/Domain/`)
-- `Entity/` - Domain entities
-- `Event/` - Domain events implementing `EventInterface`
-- `Repository/` - Repository interfaces
-- `ValueObject/` - Value objects
-
-**Application Layer** (`src/Application/`)
-- `Command/` - Commands and command handlers
-- `Query/` - Queries and query handlers
-- `Event/` - Event handlers
-- `UseCase/` - Use case orchestration
-
-**Infrastructure Layer** (`src/Infrastructure/`)
-- `Bus/` - Messenger bus implementations (CommandBus, QueryBus, EventBus)
-- `Repository/` - Concrete repository implementations
-- `Database/ORM/` - Doctrine mappings
-- `Database/Migrations/` - Database migrations
-- `Http/Controller/` - HTTP controllers
+**Bus implementations:** `App\Shared\Infrastructure\Bus\*`
 
 ### Creating CQRS Handlers
 
-For each new handler, create a directory in the appropriate location (Command, Query, or Event) containing both the message and handler:
+Create a directory in the module's Application layer containing both message and handler:
 
-**Command Example:**
+**Command/Query Example** (`App\Order\Application\Command\AddProductFromCatalog\`):
 ```
-src/Application/Command/AddProductFromCatalog/
-├── AddProductFromCatalogCommand.php    # implements CommandInterface
-└── AddProductFromCatalogHandler.php     # implements CommandHandlerInterface
-```
-
-**Query Example:**
-```
-src/Application/Query/GetProduct/
-├── GetProductQuery.php                  # implements QueryInterface
-└── GetProductHandler.php                # implements QueryHandlerInterface
+AddProductFromCatalogCommand.php    # implements CommandInterface
+AddProductFromCatalogHandler.php    # implements CommandHandlerInterface
 ```
 
 **Event Example:**
-Domain events are in `src/Domain/Event/`, handlers in `src/Application/Event/`:
-```
-src/Domain/Event/ProductAdded/
-└── ProductAddedEvent.php                # implements EventInterface
+- Domain event: `App\Order\Domain\Event\ProductAddedEvent` (implements `EventInterface`)
+- Handler: `App\Order\Application\Event\ProductAdded\ProductAddedHandler` (implements `EventHandlerInterface`)
 
-src/Application/Event/ProductAdded/
-└── ProductAddedHandler.php              # implements EventHandlerInterface
-```
+Handlers are auto-registered via `_instanceof` configuration in `config/services.yaml`.
 
-All handlers are auto-registered via Symfony's autoconfiguration (see `config/services.yaml`).
+### Creating Endpoints
 
-### Configuration
+1. Create controller: `App\{Module}\Infrastructure\Http\Controller\{Action}Controller` (invokable with `__invoke`)
+2. Create request DTO: `App\{Module}\Application\Request\{Action}Request`
+3. Create use case: `App\{Module}\Application\UseCase\{Action}UseCase` (invokable, orchestrates commands/queries)
+4. For responses: create assembler in `App\{Module}\Application\Assembler\` and response DTO in `App\{Module}\Application\Response\`
 
-- `config/services.yaml` - Auto-wiring and auto-configuration for all services in `src/`
-- `config/packages/messenger.yaml` - Bus configuration with three separate buses
-- `config/packages/doctrine.yaml` - ORM and database configuration
+### Async Processing
+
+For async command/event handling, configure dedicated transports per queue in `messenger.yaml` using `AMQP_CONSUME_DSN`.
 
 ## Testing
 
-Tests are located in `tests/` and run via PHPUnit 9.5 with Symfony Bridge.
+Tests are in `tests/` with three categories: `Integration/`, `Unit/`, `Functional/`. Helper classes can be added to `tests/Tools/`.
 
 Run all tests: `make test`
-
-PHPUnit configuration: `phpunit.xml.dist`
