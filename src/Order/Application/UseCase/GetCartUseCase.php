@@ -29,7 +29,7 @@ final readonly class GetCartUseCase
         );
 
         if ($cart === null) {
-            $this->commandBus->execute(
+            $this->commandBus->dispatch(
                 new CreateNewCartCommand($request->userId, new Region($request->region)),
             );
 
