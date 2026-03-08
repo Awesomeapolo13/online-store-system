@@ -8,6 +8,7 @@ use App\Shared\Infrastructure\Messaging\Messenger\Stamp\AMQPMessageStamp;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Connection\AMQPRabbitMQConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Exception\TransportException;
@@ -161,15 +162,25 @@ final class AMQPReceiver implements ReceiverInterface
 
     private function onMessageReceived(AMQPMessage $message, string $queueName): void
     {
+        $rawProperties = $message->get_properties();
+        $body = $message->getBody();
+
         try {
             $this->logger->debug('Message received', [
                 'queue' => $queueName,
                 'delivery_tag' => $message->getDeliveryTag(),
+                'properties' => $rawProperties,
+                'body_preview' => substr($body, 0, 500),
             ]);
             // Десериализуем сообщение
+            $appHeaders = $rawProperties['application_headers'] ?? [];
+            if ($appHeaders instanceof AMQPTable) {
+                $appHeaders = $appHeaders->getNativeData();
+            }
+
             $envelope = $this->serializer->decode([
-                'body' => $message->getBody(),
-                'headers' => $message->get_properties(),
+                'body' => $body,
+                'headers' => $appHeaders,
             ]);
             // Добавляем stamps
             $envelope = $envelope
@@ -184,6 +195,9 @@ final class AMQPReceiver implements ReceiverInterface
             $this->logger->error('Failed to process received message', [
                 'error' => $exception->getMessage(),
                 'queue' => $queueName,
+                'body' => $body,
+                'properties' => $rawProperties,
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             // Отклоняем сообщение при ошибке десериализации
