@@ -35,6 +35,12 @@ services:
             tags:
                 - { name: messenger.message_handler, bus: event.bus }
 
+    App\Shared\Infrastructure\Http\Middleware\ExceptionFormatterMiddleware:
+        arguments:
+            $env: '%kernel.environment%'
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
+
     App\Shared\Infrastructure\Messaging\RabbitMQ\Connection\AMQPRabbitMQConnection:
         arguments:
             $rabbitHost: '%rabbitmq.host%'
