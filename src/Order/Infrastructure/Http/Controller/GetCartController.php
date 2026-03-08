@@ -29,6 +29,6 @@ final readonly class GetCartController
             return new JsonResponse(null, Response::HTTP_ACCEPTED);
         }
 
-        return new JsonResponse($result, Response::HTTP_OK);
+        return new JsonResponse(['cart' => $result], Response::HTTP_OK);
     }
 }
