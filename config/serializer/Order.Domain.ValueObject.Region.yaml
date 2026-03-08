@@ -1,0 +1,4 @@
+App\Order\Domain\ValueObject\Region:
+    attributes:
+        regionCode:
+            serialized_name: regionCode
