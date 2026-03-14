@@ -1,0 +1,4 @@
+App\Order\Application\Request\GetCartRequest:
+    attributes:
+        userId:
+            serialized_name: user_id

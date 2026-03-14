@@ -152,6 +152,11 @@ class Cart
         return $this;
     }
 
+    public function getCartItems(): Collection
+    {
+        return $this->cartItems;
+    }
+
     public function findItemBySupCode(string $supCode): ?CartItem
     {
         return $this->cartItems->findFirst(static fn (int $i, CartItem $cartItem) => $cartItem->getSupCode() === $supCode);

@@ -1,0 +1,9 @@
+App\Order\Application\Request\GetCartRequest:
+    properties:
+        userId:
+            - NotBlank: ~
+            - Positive: ~
+        region:
+            - NotBlank: ~
+            - Choice:
+                callback: ['App\Order\Domain\Enum\RegionCodeEnum', 'values']

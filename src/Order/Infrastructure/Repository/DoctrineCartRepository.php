@@ -34,4 +34,19 @@ class DoctrineCartRepository extends ServiceEntityRepository implements CartRepo
 
         $this->eventBus->execute(...$cart->releaseEvents());
     }
+
+    public function findActiveByUserIdAndRegion(int $userId, int $regionCode): ?Cart
+    {
+        return $this->createQueryBuilder('c')
+            ->leftJoin('c.cartItems', 'ci')
+            ->addSelect('ci')
+            ->where('c.userId = :userId')
+            ->andWhere('c.region.regionCode = :regionCode')
+            ->andWhere('c.deletedAt IS NULL')
+            ->setParameter('userId', $userId)
+            ->setParameter('regionCode', $regionCode)
+            ->getQuery()
+            ->getOneOrNullResult()
+        ;
+    }
 }

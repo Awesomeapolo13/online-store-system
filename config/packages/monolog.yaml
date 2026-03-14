@@ -1,0 +1,22 @@
+monolog:
+    channels:
+        - amqp
+
+    handlers:
+        amqp_file:
+            type: stream
+            path: '%kernel.logs_dir%/amqp.log'
+            level: debug
+            channels: [amqp]
+
+        amqp_stderr:
+            type: stream
+            path: 'php://stderr'
+            level: debug
+            channels: [amqp]
+
+        main:
+            type: stream
+            path: '%kernel.logs_dir%/%kernel.environment%.log'
+            level: debug
+            channels: ['!amqp']

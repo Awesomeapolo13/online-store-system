@@ -23,4 +23,9 @@ class CommandBus implements CommandBusInterface
     {
         return $this->handle($command);
     }
+
+    public function dispatch(CommandInterface $command): void
+    {
+        $this->messageBus->dispatch($command);
+    }
 }

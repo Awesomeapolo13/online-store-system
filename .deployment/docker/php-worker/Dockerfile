@@ -15,7 +15,8 @@ RUN apk add --no-cache --update \
     rabbitmq-c-dev
 
 # Install PHP extensions
-RUN docker-php-ext-install sockets pcntl
+RUN apk add --no-cache libpq-dev \
+    && docker-php-ext-install sockets pcntl pdo_pgsql
 RUN pecl install amqp
 RUN docker-php-ext-enable amqp
 

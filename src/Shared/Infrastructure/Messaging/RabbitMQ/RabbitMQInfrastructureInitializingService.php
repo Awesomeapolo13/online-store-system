@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Shared\Infrastructure\Messaging\RabbitMQ;
 
-use App\Shared\Infrastructure\Messaging\RabbitMQ\Config\ExchangeConfigElement;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Config\RabbitMQInfrastructureConfig;
 use App\Shared\Infrastructure\Messaging\RabbitMQ\Connection\AMQPRabbitMQConnection;
 use PhpAmqpLib\Channel\AMQPChannel;
