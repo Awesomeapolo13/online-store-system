@@ -58,7 +58,8 @@ final class GetCartControllerTest extends WebTestCase
             ->entityManager
             ->createQuery('DELETE FROM ' . Cart::class . ' c WHERE c.userId IN (:userIds)')
             ->setParameter('userIds', [self::USER_ID_NO_CART, self::USER_ID_WITH_CART])
-            ->execute();
+            ->execute()
+        ;
 
         parent::tearDown();
     }
