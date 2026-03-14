@@ -26,7 +26,6 @@ final class CartAssemblerTest extends TestCase
         $this->assembler = new CartAssembler();
     }
 
-    #[Test]
     public function testToResponseWithEmptyCart(): void
     {
         $region = new Region(52);
@@ -63,11 +62,9 @@ final class CartAssemblerTest extends TestCase
             $response->orderDate,
             'Order date should be formatted as RFC3339',
         );
-        self::assertIsArray($response->cartItems, 'cartItems should be an array');
         self::assertEmpty($response->cartItems, 'cartItems should be empty for a cart with no items');
     }
 
-    #[Test]
     public function testToResponseWithCartItems(): void
     {
         $region = new Region(77);
