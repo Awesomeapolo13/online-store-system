@@ -96,6 +96,18 @@ Handlers are auto-registered via `_instanceof` configuration in `config/services
 3. Create use case: `App\{Module}\Application\UseCase\{Action}UseCase` (invokable, orchestrates commands/queries)
 4. For responses: create assembler in `App\{Module}\Application\Assembler\` and response DTO in `App\{Module}\Application\Response\`
 
+### Request Validation
+
+Validation uses `symfony/validator`. Rules are declared in `config/validator/validation.yaml`.
+
+Custom constraints live in `App\{Module}\Infrastructure\Service\Validation\Constraint\{ParameterName}\` and contain two classes:
+- A `Constraint` subclass (the annotation/attribute)
+- A `ConstraintValidator` subclass (the logic)
+
+### Serialization
+
+Serialization uses `symfony/serializer`. Mapping is declared in `config/serializer/` using YAML files named after the fully-qualified class name with dots instead of backslashes (e.g., `App.Order.Application.Response.OrderResponse.yaml`).
+
 ### Async Processing
 
 For async command/event handling, configure dedicated transports per queue in `messenger.yaml` using `AMQP_CONSUME_DSN`.
