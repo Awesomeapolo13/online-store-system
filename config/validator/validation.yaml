@@ -1,3 +1,23 @@
+App\Order\Application\Request\AddProductToCartRequest:
+    properties:
+        userId:
+            - NotBlank: ~
+            - Positive: ~
+        region:
+            - NotBlank: ~
+            - Choice:
+                callback: ['App\Order\Domain\Enum\RegionCodeEnum', 'values']
+        supCode:
+            - NotBlank: ~
+            - Regex:
+                pattern: '/^\d{15}$/'
+                message: 'sup_code must be a string of 15 digits.'
+        quantity:
+            - NotBlank: ~
+            - Positive: ~
+        orderDate:
+            - NotBlank: ~
+
 App\Order\Application\Request\GetCartRequest:
     properties:
         userId:

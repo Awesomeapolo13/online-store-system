@@ -24,7 +24,7 @@
         <embedded name="totalCost" class="App\Order\Domain\ValueObject\Cost" column-prefix="total_"/>
         <field name="version" type="integer" version="true"/>
 
-        <one-to-many field="cartItems" target-entity="App\Order\Domain\Entity\CartItem" mapped-by="cart">
+        <one-to-many field="cartItems" target-entity="App\Order\Domain\Entity\CartItem" mapped-by="cart" orphan-removal="true">
             <cascade>
                 <cascade-persist/>
                 <cascade-remove/>

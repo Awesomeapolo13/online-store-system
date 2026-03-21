@@ -1,0 +1,8 @@
+App\Order\Application\Request\AddProductToCartRequest:
+    attributes:
+        userId:
+            serialized_name: user_id
+        supCode:
+            serialized_name: sup_code
+        orderDate:
+            serialized_name: order_date
