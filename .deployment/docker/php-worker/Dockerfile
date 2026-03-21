@@ -16,7 +16,7 @@ RUN apk add --no-cache --update \
 
 # Install PHP extensions
 RUN apk add --no-cache libpq-dev \
-    && docker-php-ext-install sockets pcntl pdo_pgsql
+    && docker-php-ext-install sockets pcntl pdo_pgsql bcmath
 RUN pecl install amqp
 RUN docker-php-ext-enable amqp
 

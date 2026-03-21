@@ -1,7 +1,7 @@
 FROM php:8.4-cli-alpine
 
 RUN apk add --no-cache --update curl git build-base zlib-dev oniguruma-dev autoconf linux-headers bash rabbitmq-c-dev
-RUN docker-php-ext-install sockets
+RUN docker-php-ext-install sockets bcmath
 RUN pecl install amqp
 RUN docker-php-ext-enable amqp
 
