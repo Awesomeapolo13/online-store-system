@@ -14,7 +14,6 @@ final class CartItemTest extends TestCase
     // -------------------------------------------------------------------------
     // updateQuantityAndCost
     // -------------------------------------------------------------------------
-
     public function testUpdateQuantityAndCostUpdatesAllThreeFields(): void
     {
         $now = new \DateTimeImmutable();
