@@ -7,6 +7,7 @@ namespace App\Shared\Infrastructure\Http\Middleware;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
+use Symfony\Component\Messenger\Exception\HandlerFailedException;
 use Symfony\Component\Validator\Exception\ValidationFailedException;
 
 final class ExceptionFormatterMiddleware
@@ -21,6 +22,14 @@ final class ExceptionFormatterMiddleware
         $exception = $event->getThrowable();
         if ($this->env === 'dev') {
             return;
+        }
+
+        // Unwrap HandlerFailedException to expose the original handler exception.
+        if ($exception instanceof HandlerFailedException) {
+            $wrapped = array_values($exception->getWrappedExceptions());
+            if (!empty($wrapped)) {
+                $exception = $wrapped[0];
+            }
         }
 
         if ($exception->getPrevious() instanceof ValidationFailedException) {

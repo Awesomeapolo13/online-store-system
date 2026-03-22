@@ -86,6 +86,16 @@ class CartItem
         return $this->quantity;
     }
 
+    public function updateQuantityAndCost(int $quantity, Price $perItemPrice, Cost $totalCost): self
+    {
+        $this->quantity = $quantity;
+        $this->perItemPrice = $perItemPrice;
+        $this->totalCost = $totalCost;
+        $this->updatedAt = new \DateTimeImmutable();
+
+        return $this;
+    }
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;

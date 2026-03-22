@@ -14,7 +14,6 @@ use App\Order\Domain\ValueObject\OrderDate;
 use App\Order\Domain\ValueObject\Price;
 use App\Order\Domain\ValueObject\Region;
 use App\Order\Domain\ValueObject\Type;
-use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
 final class CartAssemblerTest extends TestCase

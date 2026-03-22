@@ -162,11 +162,32 @@ class Cart
         return $this->cartItems->findFirst(static fn (int $i, CartItem $cartItem) => $cartItem->getSupCode() === $supCode);
     }
 
+    public function addCartItem(CartItem $cartItem): self
+    {
+        if (!$this->cartItems->contains($cartItem)) {
+            $this->cartItems->add($cartItem);
+            $cartItem->setCart($this);
+        }
+
+        return $this;
+    }
+
     public function removeCartItem(CartItem $cartItem): self
     {
         if ($this->cartItems->removeElement($cartItem)) {
             $cartItem->setCart(null);
         }
+
+        return $this;
+    }
+
+    public function recalculateTotalCost(): self
+    {
+        $total = Cost::zero();
+        foreach ($this->cartItems as $item) {
+            $total = $total->add($item->getTotalCost());
+        }
+        $this->totalCost = $total;
 
         return $this;
     }

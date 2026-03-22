@@ -67,6 +67,13 @@ services:
             $serializer: '@serializer'
             $logger: '@monolog.logger.amqp'
 
+    App\Order\Application\Api\Product\ProductApiInterface:
+        alias: App\Order\Infrastructure\Http\Api\Product\SymfonyClientProductApi
+
+    App\Order\Infrastructure\Http\Api\Product\SymfonyClientProductApi:
+        arguments:
+            $baseUrl: '%env(PRODUCT_API_BASE_URL)%'
+
     App\Shared\Infrastructure\Messaging\Messenger\Transport\AMQPTransportFactory:
         arguments:
             $logger: '@monolog.logger.amqp'

@@ -1,0 +1,122 @@
+{
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "lastMigration": 29,
+  "name": "Product API",
+  "endpointPrefix": "",
+  "latency": 0,
+  "port": 3001,
+  "hostname": "",
+  "folders": [],
+  "routes": [
+    {
+      "uuid": "11111111-1111-1111-1111-111111111111",
+      "type": "http",
+      "documentation": "Get product - available",
+      "method": "get",
+      "endpoint": "v1/product",
+      "responses": [
+        {
+          "uuid": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"product\": {\n      \"sup_code\": \"369428000000000\",\n      \"price_per_item\": 238.8,\n      \"is_available_for_order\": true\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Product available",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "sup_code",
+              "value": "369428000000000",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb",
+          "body": "{\n  \"success\": true,\n  \"data\": {\n    \"product\": {\n      \"sup_code\": \"111111111111111\",\n      \"price_per_item\": 100.0,\n      \"is_available_for_order\": false\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Product not available for order",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "sup_code",
+              "value": "111111111111111",
+              "invert": false,
+              "operator": "equals"
+            }
+          ],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": false
+        },
+        {
+          "uuid": "cccccccc-cccc-cccc-cccc-cccccccccccc",
+          "body": "{\n  \"success\": false,\n  \"data\": {\n    \"error\": {\n      \"code\": \"1001\",\n      \"message\": \"No such product\"\n    }\n  }\n}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Product not found (error 1001)",
+          "headers": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "rules": [],
+          "rulesOperator": "OR",
+          "disableTemplating": false,
+          "fallbackTo404": false,
+          "default": true
+        }
+      ],
+      "enabled": true,
+      "responseMode": null
+    }
+  ],
+  "rootChildren": [
+    {
+      "type": "route",
+      "uuid": "11111111-1111-1111-1111-111111111111"
+    }
+  ],
+  "proxyMode": false,
+  "proxyHost": "",
+  "proxyRemovePrefix": false,
+  "tlsOptions": {
+    "enabled": false,
+    "type": "CERT",
+    "pfxPath": "",
+    "certPath": "",
+    "keyPath": "",
+    "caPath": "",
+    "passphrase": ""
+  },
+  "cors": true,
+  "headers": [
+    {
+      "key": "Content-Type",
+      "value": "application/json"
+    }
+  ],
+  "proxyReqHeaders": [],
+  "proxyResHeaders": [],
+  "data": [],
+  "callbacks": []
+}

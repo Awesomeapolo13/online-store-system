@@ -12,3 +12,4 @@ framework:
 
     routing:
       'App\Order\Application\Command\CreateNewCart\CreateNewCartCommand': sync
+      'App\Order\Application\Command\AddProductToCart\AddProductToCartCommand': sync
