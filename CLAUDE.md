@@ -108,6 +108,14 @@ Custom constraints live in `App\{Module}\Infrastructure\Service\Validation\Const
 
 Serialization uses `symfony/serializer`. Mapping is declared in `config/serializer/` using YAML files named after the fully-qualified class name with dots instead of backslashes (e.g., `App.Order.Application.Response.OrderResponse.yaml`).
 
+### ORM Mappings
+
+Doctrine ORM is used throughout. Mappings are XML-based, **not** annotations/attributes.
+
+- **Entity mappings**: `src/{Module}/Infrastructure/Database/ORM/Entity/{EntityName}.orm.xml`
+- **Value object mappings** (embeddables): `src/{Module}/Infrastructure/Database/ORM/ValueObject/{ValueObjectName}.orm.xml`
+- **Migrations**: part of the `Shared` module at `src/Shared/Infrastructure/DatabaseMigrations/`. Generate with `php bin/console doctrine:migrations:diff`, then edit as needed.
+
 ### Async Processing
 
 For async command/event handling, configure dedicated transports per queue in `messenger.yaml` using `AMQP_CONSUME_DSN`.
