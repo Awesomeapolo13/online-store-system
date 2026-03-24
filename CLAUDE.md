@@ -116,4 +116,6 @@ For async command/event handling, configure dedicated transports per queue in `m
 
 Tests are in `tests/` with three categories: `Integration/`, `Unit/`, `Functional/`. Helper classes can be added to `tests/Tools/`.
 
+**Database cleanup:** Tests that create database records must clean them up after completion.
+
 Run all tests: `make test`
