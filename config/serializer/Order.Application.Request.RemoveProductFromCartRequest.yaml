@@ -1,0 +1,6 @@
+App\Order\Application\Request\RemoveProductFromCartRequest:
+    attributes:
+        userId:
+            serialized_name: user_id
+        supCode:
+            serialized_name: sup_code
