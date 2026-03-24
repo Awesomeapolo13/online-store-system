@@ -9,6 +9,7 @@ use App\Order\Domain\Exception\CartAlreadyExistsException;
 use App\Order\Domain\Repository\CartRepositoryInterface;
 use App\Shared\Application\Event\EventBusInterface;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\LockMode;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -33,6 +34,11 @@ class DoctrineCartRepository extends ServiceEntityRepository implements CartRepo
         }
 
         $this->eventBus->execute(...$cart->releaseEvents());
+    }
+
+    public function lockOptimistic(Cart $cart): void
+    {
+        $this->getEntityManager()->lock($cart, LockMode::OPTIMISTIC, $cart->getVersion());
     }
 
     public function findActiveByUserIdAndRegion(int $userId, int $regionCode): ?Cart

@@ -30,6 +30,8 @@ final readonly class RemoveProductFromCartHandler implements CommandHandlerInter
             return;
         }
 
+        $this->cartRepository->lockOptimistic($cart);
+
         $item = $cart->findItemBySupCode($command->supCode);
 
         if ($item === null) {

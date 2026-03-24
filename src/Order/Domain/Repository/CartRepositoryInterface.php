@@ -11,4 +11,6 @@ interface CartRepositoryInterface
     public function save(Cart $cart): void;
 
     public function findActiveByUserIdAndRegion(int $userId, int $regionCode): ?Cart;
+
+    public function lockOptimistic(Cart $cart): void;
 }
