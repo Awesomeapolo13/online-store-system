@@ -1,0 +1,10 @@
+App\Order\Application\Request\CartSetUpRequest:
+    attributes:
+        userId:
+            serialized_name: user_id
+        orderDate:
+            serialized_name: order_date
+        isDelivery:
+            serialized_name: is_delivery
+        shopId:
+            serialized_name: shop_id
