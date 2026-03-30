@@ -41,6 +41,8 @@ final readonly class AddProductToCartHandler implements CommandHandlerInterface
             return;
         }
 
+        $this->cartRepository->lockOptimistic($cart);
+
         try {
             $productResponse = $this->productApi->getProduct(new GetProductRequest(
                 supCode: $command->supCode,
