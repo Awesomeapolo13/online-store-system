@@ -18,10 +18,10 @@ readonly class OrderDate
 
     public static function create(\DateTimeImmutable $orderDate): self
     {
-        $currentDate = new \DateTimeImmutable();
+        $minAllowedDate = new \DateTimeImmutable('+2 hours');
 
-        if ($currentDate > $orderDate) {
-            throw new \InvalidArgumentException('Order date cannot be before current date ' . $orderDate->format(\DateTimeInterface::RFC3339));
+        if ($orderDate < $minAllowedDate) {
+            throw new \InvalidArgumentException('Order date must be at least 2 hours from now, got ' . $orderDate->format(\DateTimeInterface::RFC3339));
         }
 
         return new self($orderDate);

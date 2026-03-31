@@ -33,6 +33,20 @@ App\Order\Application\Request\RemoveProductFromCartRequest:
                 pattern: '/^\d{15}$/'
                 message: 'sup_code must be a string of 15 digits.'
 
+App\Order\Application\Request\CartSetUpRequest:
+    properties:
+        userId:
+            - NotBlank: ~
+            - Positive: ~
+        region:
+            - NotBlank: ~
+            - Choice:
+                callback: ['App\Order\Domain\Enum\RegionCodeEnum', 'values']
+        orderDate:
+            - NotBlank: ~
+        isDelivery:
+            - NotNull: ~
+
 App\Order\Application\Request\GetCartRequest:
     properties:
         userId:
