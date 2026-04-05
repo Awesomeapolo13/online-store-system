@@ -71,7 +71,8 @@ class AddProductToCartHandlerTest extends KernelTestCase
                 supCode: self::SUP_CODE,
                 pricePerItem: '150.00',
                 isAvailableForOrder: true,
-            ));
+            ))
+        ;
 
         self::getContainer()->set(ProductApiInterface::class, $productApiMock);
 
@@ -112,7 +113,8 @@ class AddProductToCartHandlerTest extends KernelTestCase
                 'UPDATE ' . Cart::class . ' c SET c.version = c.version + 1 WHERE c.userId = :userId',
             )
             ->setParameter('userId', self::USER_ID_LOCK)
-            ->execute();
+            ->execute()
+        ;
 
         // Register the optimistic lock against the stale (version = 1) entity.
         $this->cartRepository->lockOptimistic($staleCart);
@@ -154,7 +156,8 @@ class AddProductToCartHandlerTest extends KernelTestCase
                 . '(SELECT c FROM ' . Cart::class . ' c WHERE c.userId IN (:userIds))',
             )
             ->setParameter('userIds', $userIds)
-            ->execute();
+            ->execute()
+        ;
 
         $this->entityManager
             ->createQuery('DELETE FROM ' . Cart::class . ' c WHERE c.userId IN (:userIds)')
