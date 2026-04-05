@@ -38,7 +38,7 @@
         </lifecycle-callbacks>
 
         <indexes>
-            <index name="UNIQ_ACTIVE_BASKET_IDX" columns="user_id">
+            <index name="UNIQ_ACTIVE_CART_IDX" columns="user_id">
                 <options>
                     <option name="where">deleted_at IS NULL</option>
                     <option name="unique">true</option>
