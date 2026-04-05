@@ -55,6 +55,8 @@ m_create:
 	${DOCKER_EXEC_PHP} php bin/console doctrine:migrations:diff
 m_run:
 	${DOCKER_EXEC_PHP} php bin/console doctrine:migration:migrate
+m_prev:
+	${DOCKER_EXEC_PHP} php bin/console doctrine:migrations:migrate prev
 fx_load:
 	${DOCKER_EXEC_PHP} php bin/console doctrine:fixtures:load
 init:
