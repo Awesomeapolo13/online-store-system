@@ -1,0 +1,243 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Order\Domain\Entity;
+
+use App\Order\Domain\ValueObject\Cost;
+use App\Order\Domain\ValueObject\OrderDate;
+use App\Order\Domain\ValueObject\Region;
+use App\Order\Domain\ValueObject\Type;
+use App\Shared\Domain\Event\EventInterface;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+
+class Order
+{
+    private ?int $id = null;
+    private int $version = 1;
+    private OrderStatus $status;
+    /**
+     * @var Collection<OrderItem>
+     */
+    private Collection $orderItems;
+    /**
+     * @var Collection<EventInterface>
+     */
+    private Collection $domainEvents;
+
+    public function __construct(
+        private Region $region,
+        private Type $type,
+        private OrderDate $orderDate,
+        private readonly ?\DateTimeImmutable $createdAt,
+        private ?\DateTimeImmutable $updatedAt,
+        private Cost $totalCost,
+        private Cost $actualTotalCost,
+        OrderStatus $status,
+        private ?int $userId = null,
+        private ?int $shopNum = null,
+    ) {
+        $this->status = $status;
+        $this->orderItems = new ArrayCollection();
+        $this->initializeDomainEvents();
+    }
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function setId(?int $id): void
+    {
+        $this->id = $id;
+    }
+
+    public function getUserId(): ?int
+    {
+        return $this->userId;
+    }
+
+    public function setUserId(?int $userId): self
+    {
+        $this->userId = $userId;
+
+        return $this;
+    }
+
+    public function getShopNum(): ?int
+    {
+        return $this->shopNum;
+    }
+
+    public function setShopNum(?int $shopNum): self
+    {
+        $this->shopNum = $shopNum;
+
+        return $this;
+    }
+
+    public function getRegion(): Region
+    {
+        return $this->region;
+    }
+
+    public function setRegion(Region $region): self
+    {
+        $this->region = $region;
+
+        return $this;
+    }
+
+    public function getType(): Type
+    {
+        return $this->type;
+    }
+
+    public function setType(Type $type): self
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    public function getOrderDate(): OrderDate
+    {
+        return $this->orderDate;
+    }
+
+    public function setOrderDate(OrderDate $orderDate): self
+    {
+        $this->orderDate = $orderDate;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeImmutable $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getTotalCost(): Cost
+    {
+        return $this->totalCost;
+    }
+
+    public function setTotalCost(Cost $totalCost): self
+    {
+        $this->totalCost = $totalCost;
+
+        return $this;
+    }
+
+    public function getActualTotalCost(): Cost
+    {
+        return $this->actualTotalCost;
+    }
+
+    public function setActualTotalCost(Cost $actualTotalCost): self
+    {
+        $this->actualTotalCost = $actualTotalCost;
+
+        return $this;
+    }
+
+    public function getVersion(): int
+    {
+        return $this->version;
+    }
+
+    public function setVersion(int $version): self
+    {
+        $this->version = $version;
+
+        return $this;
+    }
+
+    public function getStatus(): OrderStatus
+    {
+        return $this->status;
+    }
+
+    public function setStatus(OrderStatus $status): self
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getOrderItems(): Collection
+    {
+        return $this->orderItems;
+    }
+
+    public function addOrderItem(OrderItem $orderItem): self
+    {
+        if (!$this->orderItems->contains($orderItem)) {
+            $this->orderItems->add($orderItem);
+            $orderItem->setOrder($this);
+        }
+
+        return $this;
+    }
+
+    public function recalculateActualTotalCost(): self
+    {
+        $total = Cost::zero();
+        foreach ($this->orderItems as $item) {
+            $total = $total->add($item->getActualTotalCost());
+        }
+        $this->actualTotalCost = $total;
+
+        return $this;
+    }
+
+    public function recalculateTotalCost(): self
+    {
+        $total = Cost::zero();
+        foreach ($this->orderItems as $item) {
+            $total = $total->add($item->getTotalCost());
+        }
+        $this->totalCost = $total;
+
+        return $this;
+    }
+
+    public function updateTimestamps(): void
+    {
+        $this->updatedAt = new \DateTimeImmutable();
+    }
+
+    public function initializeDomainEvents(): void
+    {
+        $this->domainEvents = new ArrayCollection();
+    }
+
+    /**
+     * @return EventInterface[]
+     */
+    public function releaseEvents(): array
+    {
+        $events = $this->domainEvents->toArray();
+        $this->domainEvents->clear();
+
+        return $events;
+    }
+
+    public function recordEvent(EventInterface $event): void
+    {
+        $this->domainEvents->add($event);
+    }
+}

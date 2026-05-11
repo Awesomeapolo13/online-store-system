@@ -47,6 +47,16 @@ App\Order\Application\Request\CartSetUpRequest:
         isDelivery:
             - NotNull: ~
 
+App\Order\Application\Request\CreateOrderRequest:
+    properties:
+        userId:
+            - NotBlank: ~
+            - Positive: ~
+        region:
+            - NotBlank: ~
+            - Choice:
+                callback: ['App\Order\Domain\Enum\RegionCodeEnum', 'values']
+
 App\Order\Application\Request\GetCartRequest:
     properties:
         userId:

@@ -1,0 +1,43 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="https://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <entity
+            name="App\Order\Domain\Entity\Order"
+            table="order_order"
+            repository-class="App\Order\Infrastructure\Repository\DoctrineOrderRepository"
+    >
+
+        <id name="id" type="integer" length="11">
+            <generator strategy="AUTO"/>
+        </id>
+
+        <field name="userId" column="user_id" type="integer" length="11" nullable="true"/>
+        <field name="shopNum" column="shop_num" type="integer" length="11" nullable="true"/>
+        <embedded name="region" use-column-prefix="false" class="App\Order\Domain\ValueObject\Region"/>
+        <embedded name="type" use-column-prefix="false" class="App\Order\Domain\ValueObject\Type"/>
+        <embedded name="orderDate" use-column-prefix="false" class="App\Order\Domain\ValueObject\OrderDate"/>
+        <field name="createdAt" column="created_at" type="datetime_immutable"/>
+        <field name="updatedAt" column="updated_at" type="datetime_immutable"/>
+        <embedded name="totalCost" class="App\Order\Domain\ValueObject\Cost" column-prefix="total_"/>
+        <embedded name="actualTotalCost" class="App\Order\Domain\ValueObject\Cost" column-prefix="actual_total_"/>
+        <field name="version" type="integer" version="true"/>
+
+        <one-to-many field="orderItems" target-entity="App\Order\Domain\Entity\OrderItem" mapped-by="order" orphan-removal="true">
+            <cascade>
+                <cascade-persist/>
+                <cascade-remove/>
+            </cascade>
+        </one-to-many>
+
+        <many-to-one field="status" target-entity="App\Order\Domain\Entity\OrderStatus">
+                <join-column name="status_id" referenced-column-name="id" />
+        </many-to-one>
+
+        <lifecycle-callbacks>
+            <lifecycle-callback type="preUpdate" method="updateTimestamps"/>
+            <lifecycle-callback type="postLoad" method="initializeDomainEvents"/>
+        </lifecycle-callbacks>
+    </entity>
+</doctrine-mapping>

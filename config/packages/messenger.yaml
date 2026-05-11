@@ -58,6 +58,21 @@ framework:
           max_retries: 3
           delay: 1000
 
+      order_created_event:
+        dsn: '%env(AMQP_CONSUME_DSN)%'
+        serializer: 'App\Shared\Infrastructure\Messaging\Messenger\Serializer\AmqpMessengerSerializer'
+        options:
+          auto_setup: false
+          exchange:
+            name: events
+            type: topic
+          queues:
+            order.event.created:
+              binding_keys: [ 'order.event.created' ]
+        retry_strategy:
+          max_retries: 3
+          delay: 1000
+
       failed:
         dsn: 'doctrine://default?queue_name=failed'
 
@@ -67,5 +82,6 @@ framework:
       'App\Notification\Application\Command\*': commands
 
       'App\Shared\Domain\Event\*': events
+      'App\Order\Domain\Event\OrderCreatedEvent': order_created_event
       'App\Order\Domain\Event\*': events
       'App\Notification\Domain\Event\*': events

@@ -34,3 +34,6 @@ parameters:
     App\Order\Domain\Entity\Cart:
       - Doctrine\Common\Collections\Collection
       - Doctrine\Common\Collections\ArrayCollection
+    App\Order\Domain\Entity\Order:
+      - Doctrine\Common\Collections\Collection
+      - Doctrine\Common\Collections\ArrayCollection

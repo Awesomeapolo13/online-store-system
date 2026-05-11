@@ -2,4 +2,5 @@ parameters:
   rabbitmq.routing.commands:
       'App\Order\Application\Command\CreateNewCart\CreateNewCartCommand': 'cart.command.create'
 
-  rabbitmq.routing.events: []
+  rabbitmq.routing.events:
+      'App\Order\Domain\Event\OrderCreatedEvent': 'order.event.created'
